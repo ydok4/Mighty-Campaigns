@@ -1,0 +1,5 @@
+function GetRegionNarrativePoolData()
+    return {
+
+    };
+end

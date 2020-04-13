@@ -1,0 +1,5 @@
+function GetMilitaryForceNarrativePoolDataNarrativePoolData()
+    return {
+
+    };
+end

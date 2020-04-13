@@ -1,0 +1,8 @@
+Getting name for name_group_162   : [13, 04 2020 20:07:11]
+Generated name key is Villieth   : [13, 04 2020 20:07:11]
+No tracked lords. Using first generated name.   : [13, 04 2020 20:07:11]
+Getting art set for sub type: wh2_main_lzd_saurus_old_blood   : [13, 04 2020 20:07:11]
+Getting name for name_group_162   : [13, 04 2020 20:07:11]
+Generated name key is FabiolaDubois   : [13, 04 2020 20:07:11]
+No tracked lords. Using first generated name.   : [13, 04 2020 20:07:11]
+Getting art set for sub type: wh2_dlc14_brt_repanse   : [13, 04 2020 20:07:11]

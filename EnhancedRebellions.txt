@@ -1,0 +1,73 @@
+Initialised   : [13, 04 2020 20:07:11]
+No MCM   : [13, 04 2020 20:07:11]
+Overriding Norscan listeners   : [13, 04 2020 20:07:11]
+FINISHED
+
+FINISHED
+
+Spawning rebellion in province: wh2_main_southlands_jungle for faction: wh2_dlc14_brt_chevaliers_de_lyonesse   : [13, 04 2020 20:07:11]
+Found valid regions   : [13, 04 2020 20:07:11]
+Rebellion will trigger in region: wh_main_couronne_et_languille_couronne   : [13, 04 2020 20:07:11]
+Starting Rebellion/Incurions   : [13, 04 2020 20:07:11]
+Chosen rebellionSubculture: wh2_main_sc_lzd_lizardmen   : [13, 04 2020 20:07:11]
+Checked spawn region: wh_main_couronne_et_languille_couronne   : [13, 04 2020 20:07:11]
+Checked target region: wh_main_couronne_et_languille_couronne   : [13, 04 2020 20:07:11]
+Getting character name   : [13, 04 2020 20:07:11]
+Getting art set   : [13, 04 2020 20:07:11]
+Generated general:wh2_main_lzd_saurus_old_blood and archetype: Saurus   : [13, 04 2020 20:07:11]
+Spawn region is: wh_main_couronne_et_languille_couronne   : [13, 04 2020 20:07:11]
+Spawning at X: 1 Y: 1   : [13, 04 2020 20:07:11]
+Rebellion spawned. Military force cqi is: 10   : [13, 04 2020 20:07:11]
+Adding to active rebellions   : [13, 04 2020 20:07:11]
+Added force to active rebellions   : [13, 04 2020 20:07:11]
+FINISHED
+
+Spawned rebellion in province: wh2_main_southlands_jungle   : [13, 04 2020 20:07:11]
+FINISHED
+
+PRE: DelayedStartRepanse is active in region: wh2_main_coast_of_araby_copher   : [13, 04 2020 20:07:11]
+PRE: Will start on turn: 15   : [13, 04 2020 20:07:11]
+FINISHED
+
+Found PRE in province: wh2_main_vor_coast_of_araby   : [13, 04 2020 20:07:11]
+Checking PRE: DelayedStartRepanse   : [13, 04 2020 20:07:11]
+CurrentTurn: 15 PRE emerge turn: 15   : [13, 04 2020 20:07:11]
+Starting PRE Army   : [13, 04 2020 20:07:11]
+Checked spawn region: wh2_main_coast_of_araby_copher   : [13, 04 2020 20:07:11]
+Checked target region: wh2_main_coast_of_araby_copher   : [13, 04 2020 20:07:11]
+Getting character name   : [13, 04 2020 20:07:11]
+Getting art set   : [13, 04 2020 20:07:11]
+Generated general:wh2_dlc14_brt_repanse and archetype: DelayedStartRepanse   : [13, 04 2020 20:07:11]
+Spawn region is: wh2_main_coast_of_araby_copher   : [13, 04 2020 20:07:11]
+Attempting to spawn army on sea...   : [13, 04 2020 20:07:11]
+Spawning at X: 1 Y: 1   : [13, 04 2020 20:07:11]
+Rebellion spawned. Military force cqi is: 10   : [13, 04 2020 20:07:11]
+Triggering incident for pre: poe_generic_incursion   : [13, 04 2020 20:07:11]
+Trying to find existing character...   : [13, 04 2020 20:07:11]
+ERROR: Could not find existing chatacter!   : [13, 04 2020 20:07:11]
+Adding to active rebellions   : [13, 04 2020 20:07:11]
+ERROR: Military force cqi already exists   : [13, 04 2020 20:07:11]
+Added force to active rebellions   : [13, 04 2020 20:07:11]
+FINISHED
+
+Adding past PRE: DelayedStartRepanse   : [13, 04 2020 20:07:16]
+PRE Army: wh2_dlc14_brt_chevaliers_de_lyonesse has spawned in province: wh2_main_vor_coast_of_araby   : [13, 04 2020 20:07:16]
+FINISHED
+
+Checking rebels in province: wh2_main_vor_coast_of_araby   : [13, 04 2020 20:07:16]
+Checking military force: 10   : [13, 04 2020 20:07:16]
+FINISHED
+
+Rebel faction found: wh2_dlc14_brt_chevaliers_de_lyonesse   : [13, 04 2020 20:07:17]
+Checking ReEmerged faction: wh2_dlc14_brt_chevaliers_de_lyonesse   : [13, 04 2020 20:07:17]
+Found character with military force: 10   : [13, 04 2020 20:07:17]
+FINISHED
+
+Checking rebels in province: wh2_main_vor_coast_of_araby   : [13, 04 2020 20:07:17]
+Checking military force: 10   : [13, 04 2020 20:07:17]
+FINISHED
+
+PRE: DelayedStartCountNoctilus is active in region: wh_main_middenland   : [13, 04 2020 20:07:17]
+PRE: Will start on turn: 145   : [13, 04 2020 20:07:17]
+FINISHED
+
