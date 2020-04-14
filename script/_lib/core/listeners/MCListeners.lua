@@ -10,8 +10,13 @@ function MC_SetupPostUIListeners(mc, core, invasion_manager, enableLogging)
         });
         mc.ExpandedSeaEncountersController:Initialise(core, invasion_manager, enableLogging);
 
+        local pastNarratives = {};
+        if mc.NarrativeController ~= nil then
+            pastNarratives = mc.NarrativeController.PastNarratives;
+        end
         mc.NarrativeController = NarrativeController:new({
             MainController = mc,
+            PastNarratives = pastNarratives,
         });
         mc.NarrativeController:Initialise(core, enableLogging);
         MC_NC_SetupListeners(mc, core);
@@ -56,27 +61,28 @@ function MC_NC_SetupListeners(mc, core)
             local faction = context:faction();
             local factionKey = faction:name();
             local regionList = faction:region_list();
+
+            local isHumanFaction = mc.HumanFaction:name() == context:faction():name();
             -- Iterate over all provinces and add into a list
-            local checkedProvinces = {};
+            local factionRegions = {};
             for i = 0, regionList:num_items() - 1 do
                 local region = regionList:item_at(i);
                 local regionName = region:name();
                 local provinceKey = region:province_name();
-                if not checkedProvinces[provinceKey]
-                -- Oak of ages is excluded from all generation
-                and regionName ~= "wh_main_yn_edri_eternos_the_oak_of_ages"
-                and Roll100(100) == true then
-                    local validNarratives = mc.NarrativeController:GenerateNarrativesForFaction(faction, region, provinceKey);
-                    --mc.NarrativeController.Logger:Log("Generated faction narratives");
-                    local selectedNarrative = GetRandomItemFromWeightedList(validNarratives);
-                    if selectedNarrative.NarrativeData ~= nil then
-                        mc.NarrativeController.Logger:Log("Starting narrative");
-                        mc.NarrativeController:StartNarrative(region, "Faction", selectedNarrative.NarrativeData);
-                    end
-                end
-                checkedProvinces[provinceKey] = true;
+                local settlement = region:settlement();
+                local climateKey = settlement:get_climate();
+                factionRegions[regionName] = true;
             end
-            --mc.NarrativeController.Logger:Log_Finished();
+            local validNarratives = mc.NarrativeController:GenerateNarrativesForFaction(faction, factionRegions, "Faction");
+            --mc.NarrativeController.Logger:Log("Generated faction narratives");
+            local selectedNarrative = GetRandomItemFromWeightedList(validNarratives);
+            if selectedNarrative.NarrativeData ~= nil then
+                mc.NarrativeController.Logger:Log("Starting narrative: "..selectedNarrative.NarrativeData.Key);
+                local spawnRegion = cm:get_region(selectedNarrative.SpawnRegionKey);
+                mc.NarrativeController.Logger:Log("Spawn region is: "..selectedNarrative.SpawnRegionKey);
+                mc.NarrativeController:StartNarrative(spawnRegion, "Faction", selectedNarrative.NarrativeData);
+                mc.NarrativeController.Logger:Log_Finished();
+            end
         end,
         true
     );

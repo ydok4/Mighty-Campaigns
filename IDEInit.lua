@@ -84,6 +84,41 @@ humanFaction = {
     has_effect_bundle = function() return true; end,
     is_horde = function() return false; end,
     can_be_horde = function() return false; end,
+    factions_of_same_culture = function() return {
+            num_items = function()
+                return 1;
+            end,
+            item_at = function()
+                return testFaction;
+            end,
+        };
+    end,
+    at_war_with = function() return false; end,
+    factions_non_aggression_pact_with = function() return {
+            num_items = function()
+                return 1;
+            end,
+            item_at = function()
+                return testFaction;
+            end,
+        };
+    end,
+    factions_trading_with = function() return {
+            num_items = function()
+                return 1;
+            end,
+            item_at = function()
+                return testFaction;
+            end,
+        }
+    end,
+    diplomatic_standing_with = function() return 10; end,
+    diplomatic_attitude_towards = function() return 15; end,
+    military_allies_with = function() return true; end,
+    defensive_allies_with = function() return true; end,
+    get_climate_suitability = function() return "suitability_good"; end,
+    is_allowed_to_capture_territory = function() return true; end,
+    treasury = function() return 2000; end,
 }
 
 testFaction = {
@@ -269,6 +304,46 @@ testRegion = {
         } end ,
     } end,
     settlement = function() return {
+        is_null_interface = function() return false; end,
+        get_climate = function() return "suitability_good"; end,
+        primary_slot = function() return {
+            is_null_interface = function() return false; end,
+            has_building = function() return true; end,
+            building = function() return {
+                is_null_interface = function() return false; end,
+                name = function() return
+                    "main_settlement";
+                end,
+                chain = function() return "wh2_main_def_murder"; end,
+                superchain = function()
+                    return "wh2_main_sch_infrastructure1_farm";
+                end,
+                building_level = function()
+                    return 2;
+                end,
+            };
+        end
+        };
+        end,
+        port_slot = function() return {
+            is_null_interface = function() return false; end,
+            has_building = function() return true; end,
+            building = function() return {
+                is_null_interface = function() return false; end,
+                name = function() return
+                    "port";
+                end,
+                chain = function() return "wh2_main_def_sorcery"; end,
+                superchain = function()
+                    return "wh2_main_sch_infrastructure1_farm";
+                end,
+                building_level = function()
+                    return 2;
+                end,
+                };
+            end
+            };
+        end,
         is_port = function()
             return true;
         end,
@@ -281,10 +356,11 @@ testRegion = {
                     return slot_2;
                 end
             end
-        }
+        };
         end,
-    }
-    end
+    };
+    end,
+    town_wealth_growth = function() return 100; end,
 };
 
 function get_cm()
@@ -665,6 +741,11 @@ ER_SaveConfederatedFactions(ER);
 ER_SaveMilitaryCrackDowns(ER);
 ER_SaveTriggeredAgentDeployDilemmas(ER);
 
+MC_InitialiseSaveHelpers(cm, context);
+MC_NC_SaveHistory(MC);
+
+MC = {};
+
 ER_InitialiseLoadHelpers(cm, context);
 ER_LoadActiveRebellions(ER);
 ER_LoadRebelForces(ER);
@@ -675,3 +756,7 @@ ER_LoadReemergedFactions(ER);
 ER_LoadConfederatedFactions(ER);
 ER_LoadMilitaryCrackDowns(ER);
 ER_LoadAgentDeployDilemmas(ER);
+
+MC_InitialiseLoadHelpers(cm, context);
+MC_NC_LoadHistory(MC);
+zz_mighty_campaigns();

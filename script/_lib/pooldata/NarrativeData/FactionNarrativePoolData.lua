@@ -199,6 +199,35 @@ function GetFactionNarrativePoolData()
                 },
             },
 
+
+        },
+
+        -- Empire
+        wh_main_sc_emp_empire = {
+            mc_hexensnact = {
+                Key = "mc_hexensnact",
+                PlayerOnly = true,
+                Tags = {"periodic", "vampiric", },
+                SpawnCriteria = {
+                    MinimumRequiredPublicOrder = -99,
+                    MinimumTurn = 2,
+                    ExcludedFactions = { "wh2_dlc13_emp_the_huntmarshals_expedition", "wh2_main_emp_sudenburg", },
+                    UseProvinceRebellionMap = "wh_main_sc_vmp_vampire_counts",
+                    IsUnique = false,
+                    SpawnChance = 100,
+                    Timeout = 4,
+                },
+                SpawnData = {
+                    PREs = {
+                        HexensnachtNecromancer = {
+                            SubcultureKey = "wh_main_sc_vmp_vampire_counts",
+                            TargetOverrides = {
+                                TargetAnyRegionInProvince = true,
+                            },
+                        },
+                    },
+                },
+            },
         },
     };
 end

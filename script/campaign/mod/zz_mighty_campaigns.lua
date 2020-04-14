@@ -20,7 +20,7 @@ function zz_mighty_campaigns()
     local enableLogging = true;
     out("MC: Main mod function");
     MC = MCController:new({
-
+        NarrativeController = MC.NarrativeController,
     });
     MC:Initialise(enableLogging);
     MC.Logger:Log("Initialised");
@@ -40,6 +40,8 @@ end
 cm:add_saving_game_callback(
     function(context)
         out("MC: Saving callback");
+        MC_InitialiseSaveHelpers(cm, context);
+        MC_NC_SaveHistory(MC);
         out("MC: Finished saving");
     end
 );
@@ -47,6 +49,8 @@ cm:add_saving_game_callback(
 cm:add_loading_game_callback(
     function(context)
         out("MC: Loading callback");
+        MC_InitialiseLoadHelpers(cm, context);
+        MC_NC_LoadHistory(MC);
         out("MC: Finished loading");
 	end
 );

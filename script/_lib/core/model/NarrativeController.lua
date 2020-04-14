@@ -3,7 +3,7 @@ NarrativeController = {
     MainController = {},
     -- Contains the narrative resources for the different scopes
     NarrativeResources = {},
-    -- Tracks narrative events I've triggered previously
+    -- Tracks narrative events triggered previously
     PastNarratives = {
         Global = {},
         Faction = {},
@@ -24,8 +24,31 @@ function NarrativeController:Initialise(core, enableLogging)
     self.Logger = Logger:new({});
     self.Logger:Initialise("MightyCampaigns-NarrativeController.txt", enableLogging);
     self.Logger:Log_Start();
+    self:InitialisePastNarratives();
     -- Load narrative resources
     self:LoadNarrativeResources();
+end
+
+function NarrativeController:InitialisePastNarratives()
+    if self.PastNarratives == nil then
+        self.PastNarratives = {};
+    end
+
+    if self.PastNarratives.Global == nil then
+        self.PastNarratives.Global = {};
+    end
+    if self.PastNarratives.Faction == nil then
+        self.PastNarratives.Faction = {};
+    end
+    if self.PastNarratives.Province == nil then
+        self.PastNarratives.Province = {};
+    end
+    if self.PastNarratives.Region == nil then
+        self.PastNarratives.Region = {};
+    end
+    if self.PastNarratives.MilitaryForce == nil then
+        self.PastNarratives.MilitaryForce = {};
+    end
 end
 
 function NarrativeController:LoadNarrativeResources()
@@ -55,8 +78,11 @@ function NarrativeController:GenerateNarrativesForProvince(faction, region, prov
     local applicableNarratives = {};
     -- Combine the default narratives with the subculture specific ones
     for cultureKey, cultureNarratives in pairs(provinceLevelNarratives) do
-        for narrativeKey, narrativeData in pairs(cultureNarratives) do
-            applicableNarratives[narrativeKey] = narrativeData;
+        if cultureKey == "default"
+        or cultureKey == subcultureKey then
+            for narrativeKey, narrativeData in pairs(cultureNarratives) do
+                applicableNarratives[narrativeKey] = narrativeData;
+            end
         end
     end
     local validNarratives = {};
@@ -102,16 +128,20 @@ function NarrativeController:GenerateNarrativesForProvince(faction, region, prov
     return validNarratives;
 end
 
-function NarrativeController:GenerateNarrativesForFaction(faction, region, provinceKey)
+function NarrativeController:GenerateNarrativesForFaction(faction, factionRegions, scope)
     local factionName = faction:name();
     local subcultureKey = faction:subculture();
     -- Grab generic PREs for the occupying subculture
-    local provinceLevelNarratives = self:GetNarrativePoolResources("FactionNarratives");
+    local scopeResources = scope.."Narratives";
+    local provinceLevelNarratives = self:GetNarrativePoolResources(scopeResources);
     local applicableNarratives = {};
     -- Combine the default narratives with the subculture specific ones
     for cultureKey, cultureNarratives in pairs(provinceLevelNarratives) do
-        for narrativeKey, narrativeData in pairs(cultureNarratives) do
-            applicableNarratives[narrativeKey] = narrativeData;
+        if cultureKey == "default"
+        or cultureKey == subcultureKey then
+            for narrativeKey, narrativeData in pairs(cultureNarratives) do
+                applicableNarratives[narrativeKey] = narrativeData;
+            end
         end
     end
     local validNarratives = {};
@@ -143,43 +173,50 @@ function NarrativeController:GenerateNarrativesForFaction(faction, region, provi
         if validTarget == true
         and narrativeData.SpawnCriteria ~= nil then
             local validNarrative = true;
-            local validNarrative = self:CheckSpawnCriteria(narrativeKey, region, "Faction", narrativeData.SpawnCriteria);
+            validNarrative = self:CheckFactionSpawnCriteria(narrativeKey, faction, "Faction", narrativeData.SpawnCriteria);
             if validNarrative == true then
-                self.Logger:Log("Valid narrative: "..narrativeKey);
-                validNarratives[narrativeKey] = {
-                    NarrativeData = narrativeData,
-                    Weighting = 10,
-                };
+                local foundValidRegion = false;
+                local potentialSpawnRegions = {};
+                for regionKey, regionData in pairs(factionRegions) do
+                    if self:CheckRegionSpawnCriteria(narrativeKey, regionKey, "Faction", narrativeData.SpawnCriteria) == true then
+                        foundValidRegion = true;
+                        potentialSpawnRegions[regionKey] = true;
+                    end
+                end
+                if foundValidRegion == true then
+                    self.Logger:Log("Valid narrative: "..narrativeKey);
+                    local spawnRegionKey = GetRandomObjectKeyFromList(potentialSpawnRegions);
+                    validNarratives[narrativeKey] = {
+                        SpawnRegionKey = spawnRegionKey,
+                        NarrativeData = narrativeData,
+                        Weighting = 10,
+                    };
+                end
             end
         end
     end
     return validNarratives;
 end
 
-function NarrativeController:CheckSpawnCriteria(narrativeKey, region, scope, spawnCriteria)
-    local provinceKey = region:province_name();
+function NarrativeController:CheckFactionSpawnCriteria(narrativeKey, faction, scope, spawnCriteria)
+    local factionName = faction:name();
+    local subcultureKey = faction:subculture();
     local turnNumber = cm:model():turn_number();
     -- Check the minimum turn needed for the narrative to be valid
     if spawnCriteria.MinimumTurn ~= nil
     and turnNumber < spawnCriteria.MinimumTurn then
         return false;
     end
-    -- Check if the region has the minimum public order needed
-    -- Note: If two factions own regions in the province, both will be checked
-    if spawnCriteria.MinimumRequiredPublicOrder ~= nil
-    and region:public_order() < spawnCriteria.MinimumRequiredPublicOrder then
-        return false;
-    end
     -- Check if the faction or subculture is excluded/included
     -- A faction needs to pass both of these checks
     if spawnCriteria.ExcludedFactions ~= nil then
-        if spawnCriteria.ExcludedFactions[factionName] == true 
+        if spawnCriteria.ExcludedFactions[factionName] == true
         or spawnCriteria.ExcludedFactions[subcultureKey] == true then
             return false;
         end
     end
     if spawnCriteria.IncludedFactions ~= nil then
-        if spawnCriteria.IncludedFactions[factionName] == false 
+        if spawnCriteria.IncludedFactions[factionName] == false
         or spawnCriteria.IncludedFactions[subcultureKey] == false then
             return false;
         end
@@ -187,18 +224,10 @@ function NarrativeController:CheckSpawnCriteria(narrativeKey, region, scope, spa
     -- Some factions require another faction to be dead to spawn
     if spawnCriteria.RequiresDeadFaction ~= nil then
         for index, deadFactionKey in pairs(spawnCriteria.RequiresDeadFaction) do
-            local faction = cm:get_faction(deadFactionKey);
-            if not faction:is_dead() then
+            local deadFaction = cm:get_faction(deadFactionKey);
+            if not deadFaction:is_dead() then
                 return false;
             end
-        end
-    end
-    -- Some spawns need to have a subculture in the rebellion map
-    if spawnCriteria.UseProvinceRebellionMap ~= nil then
-        self.Logger:Log("Getting rebellion map for province: "..provinceKey);
-        local provinceResources = _G.ER:GetProvinceRebellionResources(provinceKey);
-        if provinceResources.RebelSubcultures[spawnCriteria.UseProvinceRebellionMap] == nil then
-            return false;
         end
     end
     -- We check if this is a unique narrative and that it hasn't occurred before.
@@ -213,18 +242,71 @@ function NarrativeController:CheckSpawnCriteria(narrativeKey, region, scope, spa
     -- We check if it fulfills the timeout criteria
     if spawnCriteria.Timeout ~= nil
     and self.PastNarratives[scope] ~= nil then
-        if scope == "Province"
-        and self.PastNarratives[scope][provinceKey] ~= nil then
-            local history = self.PastNarratives[scope][provinceKey];
+        if scope == "Faction"
+        and self.PastNarratives[scope][factionName] ~= nil then
+            local history = self.PastNarratives[scope][factionName];
             for index, scopeNarrativeHistory in pairs(history) do
                 if scopeNarrativeHistory.NarrativeKey == narrativeKey
                 and scopeNarrativeHistory.TurnNumber + spawnCriteria.Timeout > turnNumber then
                     return false;
                 end
             end
-        elseif scope == "Faction"
-        and self.PastNarratives[scope][factionName] ~= nil then
-            local history = self.PastNarratives[scope][factionName];
+        end
+    end
+    return true;
+end
+
+function NarrativeController:CheckRegionSpawnCriteria(narrativeKey, regionKey, scope, spawnCriteria)
+    local region = cm:get_region(regionKey);
+    local regionName = region:name();
+    local faction = region:owning_faction();
+    local provinceKey = region:province_name();
+    local settlement = region:settlement();
+    local climateKey = settlement:get_climate();
+    local income = region:town_wealth_growth();
+    local turnNumber = cm:model():turn_number();
+    local isHumanFaction = self.MainController.HumanFaction:name() == faction:name();
+    if isHumanFaction == true then
+        self.Logger:Log("Player region: "..regionName.." Climate: "..climateKey.." Income: "..income);
+    end
+    -- Check if the region has the minimum public order needed
+    -- Note: If two factions own regions in the province, both will be checked
+    if spawnCriteria.MinimumRequiredPublicOrder ~= nil
+    and region:public_order() < spawnCriteria.MinimumRequiredPublicOrder then
+        return false;
+    end
+    if spawnCriteria.ClimateSuitability ~= nil then
+        if faction:get_climate_suitability(climateKey) ~= spawnCriteria.ClimateSuitability then
+            return false;
+        end
+    end
+
+    if spawnCriteria.MinimumIncome ~= nil
+    and spawnCriteria.MinimumIncome < income then
+        return false;
+    end
+
+    if spawnCriteria.ValidClimates ~= nil
+    and TableHasKey(spawnCriteria.ValidClimates, climateKey) == false then
+        return false;
+    end
+
+    -- Some spawns need to have a subculture in the rebellion map
+    if spawnCriteria.UseProvinceRebellionMap ~= nil then
+        local provinceResources = _G.ER:GetProvinceRebellionResources(provinceKey);
+        if provinceResources == nil
+        or provinceResources.RebelSubcultures[spawnCriteria.UseProvinceRebellionMap] == nil then
+            return false;
+        end
+    end
+
+    -- Now we check the narrative history
+    -- We check if it fulfils the timeout criteria
+    if spawnCriteria.Timeout ~= nil
+    and self.PastNarratives[scope] ~= nil then
+        if scope == "Province"
+        and self.PastNarratives[scope][provinceKey] ~= nil then
+            local history = self.PastNarratives[scope][provinceKey];
             for index, scopeNarrativeHistory in pairs(history) do
                 if scopeNarrativeHistory.NarrativeKey == narrativeKey
                 and scopeNarrativeHistory.TurnNumber + spawnCriteria.Timeout > turnNumber then
@@ -280,6 +362,7 @@ function NarrativeController:AddPastNarrative(region, scope, narrativeData, key)
     local turnNumber = cm:model():turn_number();
     if scope == "Global" then
         self.PastNarratives.Global[narrativeData.Key] = {
+            NarrativeKey = narrativeData.Key,
             TurnNumber = turnNumber;
         };
     elseif scope == "Faction"
@@ -290,7 +373,7 @@ function NarrativeController:AddPastNarrative(region, scope, narrativeData, key)
         local pastNarrativesForScope = self.PastNarratives[scope][key];
         pastNarrativesForScope[#pastNarrativesForScope + 1] = {
             NarrativeKey = narrativeData.Key,
-            TurnNumber = turnNumber;
+            TurnNumber = turnNumber,
         };
         if narrativeData.SpawnCriteria ~= nil
         and narrativeData.SpawnCriteria.IsUnique == true then

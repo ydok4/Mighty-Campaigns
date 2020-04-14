@@ -35,5 +35,16 @@ end
 _G.ERResources.AddAdditionalProvinceRebellionResources(GetDelayedStartProvincePoolDataResources());--]]
 
 -- Narrative resources
+-- PREs
+require 'script/_lib/pooldata/PassiveRebelEventsPoolData/GlobalNarrativePoolPREs'
+_G.ERResources.AddAdditionalPassiveRebelEventResources(GetGlobalNarrativePREPoolDataResources());
+require 'script/_lib/pooldata/PassiveRebelEventsPoolData/FactionNarrativePoolPREs'
+_G.ERResources.AddAdditionalPassiveRebelEventResources(GetFactionNarrativePREPoolDataResources());
 require 'script/_lib/pooldata/PassiveRebelEventsPoolData/ProvinceNarrativePoolPREs'
 _G.ERResources.AddAdditionalPassiveRebelEventResources(GetProvinceNarrativePREPoolDataResources());
+--Army archetypes
+require 'script/_lib/pooldata/RebelArmyArchetypesPoolData/FactionNarrativePoolArmyArchetypesPoolDataResources'
+local factionNarrativeArmyArchetypes = GetFactionNarrativePoolArmyArchetypesPoolDataResources();
+for subcultureKey, subcultureData in pairs(factionNarrativeArmyArchetypes) do
+    _G.ERResources.AddAdditionalRebelArmyArchetypesResources(subcultureKey, subcultureData, false);
+end

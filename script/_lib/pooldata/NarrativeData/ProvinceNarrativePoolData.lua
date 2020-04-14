@@ -6,11 +6,12 @@ function GetProvinceNarrativePoolData()
                 PlayerOnly = false,
                 Tags = {"incursion", "greenskin", },
                 SpawnCriteria = {
+                    MinimumRequiredPublicOrder = 10,
+                    MinimumTurn = 15,
                     ExcludedFactions = nil,
                     IncludedFactions = nil,
                     RequiresDeadFactions = nil,
                     UseProvinceRebellionMap = "wh_main_sc_grn_greenskins",
-                    MinimumRequiredPublicOrder = 20,
                     IsUnique = false,
                     Timeout = 10,
                 },
@@ -27,7 +28,31 @@ function GetProvinceNarrativePoolData()
                 },
             },
             mc_night_goblin_raids = {
-
+                Key = "mc_night_goblin_raids",
+                PlayerOnly = false,
+                Tags = {"incursion", "greenskin", },
+                SpawnCriteria = {
+                    MinimumRequiredPublicOrder = 20,
+                    MinimumTurn = 20,
+                    ExcludedFactions = nil,
+                    IncludedFactions = nil,
+                    RequiresDeadFactions = nil,
+                    UseProvinceRebellionMap = "wh_main_sc_grn_greenskins",
+                    ValidClimates = {"climate_mountain", },
+                    IsUnique = false,
+                    Timeout = 10,
+                },
+                SpawnData = {
+                    PREs = {
+                        GoblinRaids = {
+                            SubcultureKey = "wh_main_sc_grn_greenskins",
+                            TargetOverrides = {
+                                Region = nil,
+                                TargetAnyRegionInProvince = true,
+                            },
+                        },
+                    },
+                },
             },
             mc_orc_raids = {
 

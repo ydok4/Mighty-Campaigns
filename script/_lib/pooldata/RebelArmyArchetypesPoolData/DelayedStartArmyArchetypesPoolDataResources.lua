@@ -63,7 +63,7 @@ function GetDelayedStartArmyArchetypesPoolDataResources()
                 },
             },
         },
-        -- Brettonia
+        -- Bretonnia
         wh_main_sc_brt_bretonnia = {
             DelayedStartRepanse = {
                 RebellionFaction = "wh2_dlc14_brt_chevaliers_de_lyonesse",

@@ -1,4 +1,4 @@
-function GetGlobalNarrativePoolData()
+function GetGlobalNarrativePREPoolDataResources()
     return {
         default = {
 
